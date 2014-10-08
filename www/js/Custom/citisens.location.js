@@ -16,22 +16,20 @@ var timer = $("#sessiontime");
 var stopWatch = new Stopwatch(timer, { delay: 1 });
 
 //$(".stopwatch").stopwatch({ delay: 1 });
-$("#spanDebug").text("First...");
 
 function onDeviceReady() {
-    //$("#spanDebug").text("Device Getting Ready");
 
     var map = new GoogleMap();
     map.initialize();
-
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    //var options = { timeout: 31000, enableHighAccuracy: true, maximumAge: 90000 };
+    var options = { timeout: 40000, maximumAge: 40000 };
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 
     var dbSize = 5 * 1024 * 1024; // 5MB
     citisense.webdb.db = window.openDatabase("Database", "1.0", "CitiSensNoise", dbSize);
     citisense.webdb.createTable();
     //citisense.webdb.db.transaction(populateDB, errorCB, successCB);
 
-    //$("#spanDebug").text("ready "+destinationType);
 }
 
 document.addEventListener("deviceready", onDeviceReady, false);
@@ -79,7 +77,7 @@ function onSuccess(position) {
 // onError Callback receives a PositionError object
 //
 function onError(error) {
-    $("#spanDebug").text(error.message);
+    //$("#spanDebug").text(error.message);
     alert('code: ' + error.code + '\n' +
         'message: ' + error.message + '\n');
 }

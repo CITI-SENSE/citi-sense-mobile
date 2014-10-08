@@ -4,12 +4,10 @@ var destinationType; // sets the format of returned value
 document.addEventListener("deviceready", onDeviceReady, false);
 
 function onDeviceReady() {
-    $("#spanDebug").text("camera Getting Ready");
 
     pictureSource = navigator.camera.PictureSourceType;
     destinationType = navigator.camera.DestinationType;
 
-    $("#spanDebug").text("camera ready " + destinationType);
 }
 
 // Called when a photo is successfully retrieved
@@ -74,19 +72,16 @@ function capturePhoto() {
         quality: 50,
         destinationType: destinationType.DATA_URL
     });
-    $("#spanDebug").text("capturePhoto");
 }
 
 // A button will call this function
 //
 function capturePhotoEdit() {
-    $("#spanDebug").text("capturePhotoEdit first");
     // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
     navigator.camera.getPicture(onPhotoDataSuccess, onFail, {
         quality: 20, allowEdit: true,
         destinationType: destinationType.DATA_URL
     });
-    $("#spanDebug").text("capturePhotoEdit");
 }
 
 // A button will call this function
@@ -99,12 +94,10 @@ function getPhoto(source) {
         sourceType: source
     });
 
-    $("#spanDebug").text("getPhoto");
 }
 
 // Called if something bad happens.
 //
 function onFail(message) {
-    $("#spanDebug").text(message);
     alert('Failed because: ' + message);
 }

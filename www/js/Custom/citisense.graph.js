@@ -16,12 +16,12 @@ var meanRadiantTemp = function (temp, cloud, radiation, tmrt) {
 };
 
 screenWidth = $(window).width() * 0.8;  // 80%
-$('#lgkWSContainer').add('#lgkRHContainer').add('#lgkTContainer').css({ 'width': screenWidth, 'height': 200 });
+$('#lgkWSContainer').add('#lgkRHContainer').add('#lgkTContainer').add('#lgAAContainer').css({ 'width': screenWidth, 'height': 200 });
 
 
 $(window).on('resize', function () {
     screenWidth = $(window).width() * 0.8;  // 80%
-    $('#lgkWSContainer').add('#lgkRHContainer').add('#lgkTContainer').css({ 'width': screenWidth, 'height': 200 });
+    $('#lgkWSContainer').add('#lgkRHContainer').add('#lgkTContainer').add('#lgAAContainer').css({ 'width': screenWidth, 'height': 200 });
 });
 
 
@@ -30,8 +30,10 @@ var kestrelWSSensor; //Wind Spees
 var kestrelRHChart; //Relative Humidity
 var kestrelTChart; //Temperature
 var kestrelAppTicker;
+var acousticAppTicker;
+var atekniaAcousticSensor; //Acoustic sensor
 
-var kestrelSensor = function (chart, fromDate, toDate, sensorId, event) {
+var graphSensor = function (chart, fromDate, toDate, sensorId, event) {
     var self = this;
     self.chart = chart;
     self.fromDate = fromDate;
@@ -47,6 +49,11 @@ var kestrelTicker = function (windSpeedTickerId, humidityTickerId, temperatureTi
     self.temperatureTickerId = temperatureTickerId;
 }
 
+var acousticTicker = function (accousticTickerId) {
+    var self = this;
+    self.accousticTickerId = accousticTickerId;
+}
+
 $(function () {
     Highcharts.setOptions({
         global: {
@@ -59,7 +66,7 @@ $(function () {
 //Function for drawing a line graph of measured wind speed data from the Kestrel Sensor stored in Sensapp, SINTEF
 citisense.graph.createLineGraphKestrelWindSpeed = function (kestrelId, from) {
 
-    kestrelWSSensor = new kestrelSensor(null, from, 0, kestrelId, null);
+    kestrelWSSensor = new graphSensor(null, from, 0, kestrelId, null);
 
     var lgkWSChart = new Highcharts.Chart({
         chart: {
@@ -158,7 +165,7 @@ citisense.graph.requestlgkWSData = function () {
             }
 
             // call it again after ten seconds
-            kestrelWSSensor.event = setTimeout(citisense.graph.requestlgkWSData, 10000);
+            kestrelWSSensor.event = setTimeout(citisense.graph.requestlgkWSData, 30000);
         },
         cache: false
     });
@@ -174,7 +181,7 @@ citisense.graph.stoplgkWS = function () {
 citisense.graph.createLineGraphKestrelRelativeHumidity = function (kestrelId, from) {
 
     //Set data interval
-    kestrelRHSensor = new kestrelSensor(null, from, 0, kestrelId, null);
+    kestrelRHSensor = new graphSensor(null, from, 0, kestrelId, null);
 
     var lgkRHChart = new Highcharts.Chart({
         chart: {
@@ -263,7 +270,7 @@ citisense.graph.requestlgkRHData = function () {
             }
 
             // call it again after five second
-            kestrelRHSensor.event = setTimeout(citisense.graph.requestlgkRHData, 10000);
+            kestrelRHSensor.event = setTimeout(citisense.graph.requestlgkRHData, 30000);
         },
         cache: false
     });
@@ -279,7 +286,7 @@ citisense.graph.stoplgkRH = function () {
 
 citisense.graph.createLineGraphKestrelTemperature = function (kestrelId, from) {
 
-    kestrelTSensor = new kestrelSensor(null, from, 0, kestrelId, null);
+    kestrelTSensor = new graphSensor(null, from, 0, kestrelId, null);
 
     var lgkTChart = new Highcharts.Chart({
         chart: {
@@ -368,7 +375,7 @@ citisense.graph.requestlgkTData = function () {
             }
 
             // call it again after five second
-            kestrelTSensor.event = setTimeout(citisense.graph.requestlgkTData, 10000);
+            kestrelTSensor.event = setTimeout(citisense.graph.requestlgkTData, 30000);
         },
         cache: false
     });
@@ -381,6 +388,118 @@ citisense.graph.stoplgkT = function () {
     window.clearInterval(kestrelTSensor.event);
 };
 
+//LINE GRAPH, ACOUSTIC
+//Function for drawing a line graph of measured acoustic data from Ateknia software sensor stored in Sensapp, SINTEF
+citisense.graph.createLineGraphAtekniaAcoustic = function (sensorID, from) {
+
+    atekniaAcousticSensor = new graphSensor(null, from, 0, sensorID, null);
+
+    var acChart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'lgAAContainer',
+
+            // Explicitly tell the width and height of a chart
+            width: null,
+            height: null,
+
+            defaultSeriesType: 'line',
+            events: {
+                load: citisense.graph.requestlgAAData
+            }
+        },
+        title: {
+            text: 'Sound pressure (Bspl)'
+        },
+        xAxis: {
+            type: 'datetime'
+        },
+        yAxis: {
+            title: {
+                text: 'Bspl'
+            },
+            type: "linear"
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 1,
+                marker: {
+                    enabled: false
+                },
+                color: '#FF0000'
+            }
+        },
+        series: [{
+            name: 'Measured',
+            data: []
+        }]
+    });
+
+    atekniaAcousticSensor.chart = acChart;
+
+};
+
+citisense.graph.requestlgAAData = function () {
+
+    atekniaAcousticSensor.toDate = ((Math.round(new Date().getTime() / 1000)));
+
+    console.log("Url:  " + acousticUrl + "databases/raw/data/" + atekniaAcousticSensor.sensorId + "/laq" + '?from=' + atekniaAcousticSensor.fromDate + '&to=' + atekniaAcousticSensor.toDate);
+
+    $.ajax({
+        url: acousticUrl + "databases/raw/data/" + atekniaAcousticSensor.sensorId + "/laq" + '?from=' + atekniaAcousticSensor.fromDate + '&to=' + atekniaAcousticSensor.toDate,
+
+        success: function (result) {
+
+            var items = [];
+            var itemsContainer = [];
+
+            var bt = 0;
+            $.each(result, function (key, val) {
+                if (key == "e") {
+                    items = val;
+                    //Create table of time and measured values
+                    $.each(items, function (index, value) {
+                        var measured = [((bt + value.t) * 1000), value.v];
+                        itemsContainer.push(measured);
+                    });
+                }
+                    //Get the base time of the measurements
+                else if (key == "bt") {
+                    bt = val;
+                }
+            });
+
+            if (itemsContainer.length > 0) {
+                ////Sort ascending
+                itemsContainer.sort(citisense.graph.SortByDateTime);
+
+                $.each(itemsContainer, function (index, value) {
+
+                    atekniaAcousticSensor.chart.series[0].addPoint(value, false, false);
+
+                });
+
+                atekniaAcousticSensor.chart.redraw();
+
+                //Prepare url parameters for next event
+                atekniaAcousticSensor.fromDate = atekniaAcousticSensor.toDate + 1;
+
+            }
+
+            // call it again after 30 seconds
+            atekniaAcousticSensor.event = setTimeout(citisense.graph.requestlgAAData, 30000);
+        },
+        cache: false
+    });
+};
+
+//Stop the graph from dynamically update
+citisense.graph.stoplgAA = function () {
+    window.clearInterval(atekniaAcousticSensor.event);
+};
+
 //Sort list by Time
 citisense.graph.SortByDateTime = function (a, b) {
 
@@ -390,7 +509,7 @@ citisense.graph.SortByDateTime = function (a, b) {
     return (aTime - bTime);
 };
 
-//start and stop ticker events
+//start and stop Kestrel ticker events
 citisense.graph.startKestrelTickers = function (temperatureTick, humidityTick, windSpeedTick) {
     kestrelAppTicker = new kestrelTicker(setInterval(temperatureTick, 10000), setInterval(humidityTick, 10000), setInterval(windSpeedTick, 10000));
 };
@@ -401,7 +520,16 @@ citisense.graph.stopKestrelTickers = function () {
     clearInterval(kestrelAppTicker.windSpeedTickerId);
 };
 
-citisense.graph.createComfortIndexGraph = function (areaId, siteId, cloudId, radiationId, timeendedHours, timeendedMinutes) {
+//start and stop Acoustic ticker events
+citisense.graph.startAccousticTicker = function (acousticTick) {
+    acousticAppTicker = new acousticTicker(setInterval(acousticTick, 10000));
+};
+
+citisense.graph.stopAcousticTickers = function () {
+    clearInterval(acousticAppTicker.accousticTickerId);
+};
+
+citisense.graph.createComfortIndexGraph = function (areaId, siteId, cloudId, radiationId, timeendedHours, timeendedMinutes, age, weight, height, cloudCover) {
 
     var totalTemp = 0;
     var totalHumidity = 0;
@@ -435,8 +563,9 @@ citisense.graph.createComfortIndexGraph = function (areaId, siteId, cloudId, rad
         //Create time interval based on time the stop button was pushed
         //var datePoint = citisense.graph.RoundTimeHalfHour(timeendedHours, timeendedMinutes);
 
-        ////*************Testing:**************
+        //************* Testing: until all tmrt values are stored in SenSapp **************
         var datePoint = citisense.graph.RoundTimeHalfHour(4, 30);
+        //*********************************************************************************
 
         var fromDate = datePoint - 300;
         var toDate = datePoint + 300;
@@ -446,17 +575,17 @@ citisense.graph.createComfortIndexGraph = function (areaId, siteId, cloudId, rad
         //Find tmrt objects on areaId, siteId
         $.ajax({
             url: tmrtSensAppUrl + 'databases/raw/data/' + 'Tmrt_Area' + areaId + '/Site' + siteId + '?from=' + fromDate + '&to=' + toDate,
-            success: function (result) {
+            success: function(result) {
                 var items = [];
                 checkPrevious = true;
 
                 if (result.hasOwnProperty('e')) {
 
                     //Create tmrt objects
-                    $.each(result, function (key, val) {
+                    $.each(result, function(key, val) {
                         if (key == "e") {
                             items = val;
-                            $.each(items, function (index, value) {
+                            $.each(items, function(index, value) {
                                 meanRadiantTemps.push(citisense.graph.createMeanRadiantTemp(value.sv));
                             });
                         }
@@ -472,11 +601,14 @@ citisense.graph.createComfortIndexGraph = function (areaId, siteId, cloudId, rad
                 }
 
 
-                if (!tmrt || !parseFloat(tmrt)) { $("#thermalIndexes").text("No tmrt found"); }
+                if (!tmrt || !parseFloat(tmrt)) {
+                    $("#thermalIndexes").text("No tmrt found");
+                }
+
                 else {
 
                     var tmrtFloat = parseFloat(tmrt);
-                    var index = PETCalculation(windSpeedAvg.toFixed(2), tempAvg.toFixed(2), humidityAvg.toFixed(2), tmrtFloat);
+                    var index = PETCalculation(windSpeedAvg.toFixed(2), tempAvg.toFixed(2), humidityAvg.toFixed(2), tmrtFloat, age, weight, height, cloudCover);
 
                     $("#thermalIndexes").empty();
                     $("#thermalIndexes").append(" \
@@ -484,14 +616,14 @@ citisense.graph.createComfortIndexGraph = function (areaId, siteId, cloudId, rad
                                 <div class='badge'>" + index + "</div> \
                             </div> \
                             <br /> \
-                            <div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>Heat</div> \
-                            <div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>" + tempAvg.toFixed(2) + " °C" + "</div> \
+                            <div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Heat</div> \
+                            <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>" + tempAvg.toFixed(2) + " °C" + "</div> \
                             <br /> \
-                            <div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>Wind</div> \
-                            <div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>" + windSpeedAvg.toFixed(2) + " m/s" + "</div> \
+                            <div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Wind</div> \
+                            <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>" + windSpeedAvg.toFixed(2) + " m/s" + "</div> \
                             <br /> \
-                            <div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>Humidity</div> \
-                            <div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>" + humidityAvg.toFixed(2) + " %" + "</div> \
+                            <div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Hum.</div> \
+                            <div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>" + humidityAvg.toFixed(2) + " %" + "</div> \
                     ");
 
                     var chart = citisense.highchart.graphs.grapcolumnGraphThermalComfort;
@@ -504,7 +636,7 @@ citisense.graph.createComfortIndexGraph = function (areaId, siteId, cloudId, rad
 
 
             },
-            error: function (result) {
+            error: function(result) {
                 //Error message to user
                 console.log("Tmrt String NOT found");
                 console.log(result);
@@ -512,6 +644,17 @@ citisense.graph.createComfortIndexGraph = function (areaId, siteId, cloudId, rad
             }
         });
     }
+    else {
+        $("#thermalIndexes").text("No measured data found");
+    }
+};
+
+citisense.graph.createAcousticIndexGraph = function(index) {
+    var chart = citisense.highchart.graphs.grapcolumnGraphAcousticComfort;
+    chart.series[0].name = 'Index';
+    chart.series[0].data = [parseFloat(index)];
+    var highchartsOptions = Highcharts.setOptions(Highcharts.SkiesTheme);
+    var drawChart = new Highcharts.Chart(chart);
 };
 
 //Round Time to nearest half hour

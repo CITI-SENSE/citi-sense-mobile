@@ -123,17 +123,24 @@ var RH;
 var tmrt;
 
 
-function PETCalculation(v_in, ta_in, RH_in, tmrt_in) {
+function PETCalculation(v_in, ta_in, RH_in, tmrt_in, age_in, mbody_in, ht_in, icl_in) {
 
     //v_in = "1.88";
     //ta_in = "24.68";
     //RH_in = "15.68";
     //tmrt_in = "10.96";
 
+
     v = parseFloat(v_in);
     ta = parseFloat(ta_in);
     RH = parseFloat(RH_in);
     tmrt = parseFloat(tmrt_in);
+    age = parseInt(age_in);
+    mbody = parseInt(mbody_in);
+    ht = parseFloat(ht_in);
+    icl = parseFloat(icl_in);
+
+    fcl = 1.0 + 0.15 * icl;
 
     if (ta != -9999) {
         //!humidity

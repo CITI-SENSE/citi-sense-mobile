@@ -7,318 +7,797 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
     <link href="css/Site.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="http://citisense.u-hopper.com/widgets/activities/activities.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 <body>
 
-    <div id="divApp" data-bind="visible: !Loading()" class="container" style="padding-top: 20px; height: 100%; display:none;">
-        
+    <div id="divApp" class="container" style="padding-top: 20px; height: 100%;">
 
-        <div data-bind="visible: StartSection" style="width: 100%;">
-                <!--<input type="text" class="form-control" data-bind="value: newSession().name" placeholder="Session name" /><br />-->
-            <input type="text" class="form-control" data-bind="value: KestrelId" placeholder="Kestrel id" /><br />
-            <input type="text" class="form-control" data-bind="value: UserEmail" placeholder="Email to send session summary" /><br />
-            <div class="row">
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <button class="btn btn-success" data-bind="click: startSession, disable: SessionRunning">
-                        <span class="glyphicon glyph-big glyphicon-play"></span>
-                        <br />
-                        Start</button>
-                    <button class="btn btn-success" data-bind="click: stopSession, enable: SessionRunning">
-                        <span class="glyphicon glyph-big glyphicon-stop"></span>
-                        <br />
-                        Stop</button>
+        <div data-bind="visible: !Loading()" style="display: none;">
+
+            <div data-bind="visible: StartSection" style="width: 100%;">
+                <div style="overflow: auto; padding-bottom: 50px;padding-top:5px;">
+                    <!--<div style="float: left;"><img src="img/logo_2.png" alt="citi-sense logo"/></div>-->
+                    <h6 style="float:right; color:grey;">&nbsp;&nbsp;V<span id="Version"></span></h6>
+                    <h4 style="float:right;color:red;">.user</h4>
                 </div>
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <h1 id="sessiontime">00:00:00</h1>
+
+                <table class="table">
+                    <tr>
+
+                        <td>
+                            <button style="width: 100%;" type="button" class="btn btn-success" data-bind="click: SelectSection.bind($data, 'wp2')">
+                                <span class="glyphicon glyphicon-user glyph-big"></span>
+                                <br />
+                                <span>WP2</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button style="width: 100%;" type="button" class="btn btn-success" data-bind="click: SelectSection.bind($data, 'wp3')">
+                                <span class="glyphicon glyphicon-time glyph-big"></span>
+                                <br />
+                                <span>WP3</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button style="width: 100%;" type="button" class="btn btn-success" data-bind="click: SelectSection.bind($data, 'settings')">
+                                <span class="glyphicon glyphicon-wrench glyph-big"></span>
+                                <br />
+                                <span>Settings</span>
+                            </button>
+                        </td>
+                    </tr>
+
+                </table>
+                
+                <div style="float:none; text-align: center; padding-top:25px; ">
+                    <img src="img/logo_2.png" alt="citi-sense logo" />
                 </div>
-            </div>
-            <div class="stopwatch"></div>
-            <h3>Last measured</h3>
-            <div class="row">
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Wind Speed</div>
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><span data-bind="text: LastWindSpeed"></span></div>
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span data-bind="text: LastWindSpeedDate"></span></div>
-            </div>
-            <div class="row">
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Temperature</div>
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><span data-bind="text: LastTemperature"></span></div>
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span data-bind="text: LastTemperatureDate"></span></div>
-            </div>
-            <div class="row">
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Humidity</div>
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"><span data-bind="text: LastHumidity"></span></div>
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span data-bind="text: LastHumidityDate"></span></div>
+
             </div>
 
-
-            <br />
-            <table class="table">
-                <tr>
-                    <td colspan="2" data-bind="visible: newSession().timestarted() && newSession().timeended()">
-                        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"> Session Start: 
-                            <span data-bind="text: newSession().timestarted() ? moment(newSession().timestarted()).format('HH:mm:ss') : ' ' "></span>
-                            End: 
-                            <span data-bind="text: newSession().timeended() ? moment(newSession().timeended()).format('HH:mm:ss') : ' ' "></span>
+            <div data-bind="visible: StartSection() == false" style="height: 100%;">
+                <nav class="navbar navbar-fixed-top" role="navigation">
+                    <div class="navbar-inner" style="width: 100%;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success" data-bind="click: SelectSection.bind($data, 'home')" style="float: left;">
+                                <span class="glyphicon glyphicon-home glyph-big"></span>
+                                <br />
+                                <span>Home</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: WP2SectionActive }, visible: WP2SectionButton, click: SelectSection.bind($data, 'wp2')">
+                                <span class="glyphicon glyphicon-user glyph-big"></span>
+                                <br />
+                                <span>WP2</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: WP3SectionActive }, visible: WP3SectionButton, click: SelectSection.bind($data, 'wp3')">
+                                <span class="glyphicon glyphicon-time glyph-big"></span>
+                                <br />
+                                <span>WP3</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: SettingsSection }, visible: SettingsSection, click: SelectSection.bind($data, 'settings')">
+                                <span class="glyphicon glyphicon-wrench glyph-big"></span>
+                                <br />
+                                Settings
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: PhotoSection }, visible: PhotoSection">
+                                <span class="glyphicon glyphicon-eye-open glyph-big"></span>
+                                <br />
+                                <span>New observation</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: MapSection }, visible: MapSection, click: addPerceptionMarkersMap">
+                                <span class="glyphicon glyphicon-globe glyph-big"></span>
+                                <br />
+                                View observations
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: NewSessionSection }, visible: NewSessionSection">
+                                <span class="glyphicon glyphicon-record glyph-big"></span>
+                                <br />
+                                <span>New session</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: ViewSessionsSection }, visible: ViewSessionsSection">
+                                <span class="glyphicon glyphicon-tasks glyph-big"></span>
+                                <br />
+                                View sessions
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: EvolutionSection }, visible: EvolutionSection">
+                                <span class="glyphicon glyphicon-stats glyph-big"></span>
+                                <br />
+                                <span>View evolution</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: ResultSection }, visible: ResultSection, click: SelectSection.bind($data, 'thermal')">
+                                <span class="glyphicon glyphicon-user glyph-big"></span>
+                                <br />
+                                <span>Thermal</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: ResultSection }, visible: ResultSection, click: SelectSection.bind($data, 'acoustic')">
+                                <span class="glyphicon glyphicon-user glyph-big"></span>
+                                <br />
+                                <span>Acoustic</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: PhysicalSectionActive }, visible: PhysicalSection, click: SelectSection.bind($data, 'physical')">
+                                <span class="glyphicon glyphicon-heart glyph-big"></span>
+                                <br />
+                                <span>Physical activity</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: PhysicalSectionGraph }, visible: PhysicalSectionGraph">
+                                <span class="glyphicon glyphicon-stats glyph-big"></span>
+                                <br />
+                                <span>Graph</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: PhysicalSectionMap }, visible: PhysicalSectionMap">
+                                <span class="glyphicon glyphicon-map-marker glyph-big"></span>
+                                <br />
+                                <span>Map</span>
+                            </button>
+                            <button type="button" class="btn btn-success" data-bind="css: { active: QuestionnaireSection }, visible: QuestionnaireSection">
+                                <span class="glyphicon glyphicon-question-sign glyph-big"></span>
+                                <br />
+                                <span>Questionnaire</span>
+                            </button>
                         </div>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td>
-                        <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: EvolutionSection }, click: SelectSection.bind($data, 'evolution')">
-                            <span class="glyphicon glyphicon-stats glyph-big"></span>
-                            <br />
-                            <span>View evolution</span>
-                        </button>
-                    </td>
-                    <td>
-                        <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: ResultSection }, enable: newSession().timestarted() && newSession().timeended(), click: SelectSection.bind($data, 'result')">
-                            <span class="glyphicon glyphicon-user glyph-big"></span>
-                            <br />
-                            <span>View results</span>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: PhotoSection }, click: SelectSection.bind($data, 'photo')">
-                            <span class="glyphicon glyphicon-eye-open glyph-big"></span>
-                            <br />
-                            <span>New observation</span>
-                        </button>
-                    </td>
-                    <td>
-                        <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: MapSection }, click: SelectSection.bind($data, 'map')">
-                            <span class="glyphicon glyphicon-globe glyph-big"></span>
-                            <br />
-                            View observations
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: PhysicalSection }, click: SelectSection.bind($data, 'physical')">
-                            <span class="glyphicon glyphicon-heart glyph-big"></span>
-                            <br />
-                            <span>Physical activity</span>
-                        </button>
-                    </td>
-                    <td>
-                       
-                    </td>
-                </tr>
-                <!--                <tr>
-                                        <td>
-                                            <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: NewSessionSection }, click: SelectSection.bind($data, 'newsession')">
-                                                <span class="glyphicon glyphicon-record glyph-big"></span>
-                                                <br />
-                                                <span>New session</span>
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: ViewSessionsSection }, click: SelectSection.bind($data, 'viewsessions')">
-                                                <span class="glyphicon glyphicon-tasks glyph-big"></span>
-                                                <br />
-                                                View sessions
-                                            </button>
-                                        </td>
-                                    </tr>-->
-                <!-- <tr>
-                         <td>
-                             <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: SettingsSection }, click: SelectSection.bind($data, 'settings')">
-                                 <span class="glyphicon glyphicon-wrench glyph-big"></span>
-                                 <br />
-                                 Settings
-                             </button>
-                         </td>
-                         <td></td>
-                     </tr>-->
-            </table>
-
-            <br />
-
-            <span id="Version"></span>
-
-
-        </div>
-
-        <div data-bind="visible: StartSection() == false" style="height: 100%;">
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-                <div class="navbar-inner" style="width: 100%;">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-success" data-bind="click: SelectSection.bind($data, 'back')" style="float: left;">
-                            <span class="glyphicon glyphicon-backward glyph-big"></span>
-                            <br />
-                            <span>Back</span>
-                        </button>
-                        <button type="button" class="btn btn-success" data-bind="css: { active: PhotoSection }, visible: PhotoSection">
-                            <span class="glyphicon glyphicon-eye-open glyph-big"></span>
-                            <br />
-                            <span>Add observation</span>
-                        </button>
-                        <button type="button" class="btn btn-success" data-bind="css: { active: MapSection }, visible: MapSection">
-                            <span class="glyphicon glyphicon-globe glyph-big"></span>
-                            <br />
-                            Show observation
-                        </button>
-                        <button type="button" class="btn btn-success" data-bind="css: { active: NewSessionSection }, visible: NewSessionSection">
-                            <span class="glyphicon glyphicon-record glyph-big"></span>
-                            <br />
-                            <span>New session</span>
-                        </button>
-                        <button type="button" class="btn btn-success" data-bind="css: { active: ViewSessionsSection }, visible: ViewSessionsSection">
-                            <span class="glyphicon glyphicon-tasks glyph-big"></span>
-                            <br />
-                            View sessions
-                        </button>
-                        <button type="button" class="btn btn-success" data-bind="css: { active: SettingsSection }, visible: SettingsSection">
-                            <span class="glyphicon glyphicon-wrench glyph-big"></span>
-                            <br />
-                            Settings
-                        </button>
-                        <button type="button" class="btn btn-success" data-bind="css: { active: EvolutionSection }, visible: EvolutionSection">
-                            <span class="glyphicon glyphicon-stats glyph-big"></span>
-                            <br />
-                            <span>View evolution</span>
-                        </button>
-                        <button type="button" class="btn btn-success" data-bind="css: { active: ResultSection }, visible: ResultSection, click: CalculateComfortIndex">
-                            <span class="glyphicon glyphicon-user glyph-big"></span>
-                            <br />
-                            <span>View results</span>
-                        </button>
-                        <button type="button" class="btn btn-success" data-bind="css: { active: PhysicalSection }, visible: PhysicalSection">
-                            <span class="glyphicon glyphicon-stats glyph-big"></span>
-                            <br />
-                            <span>Physical activity</span>
-                        </button>
                     </div>
-                </div>
-            </nav>
+                </nav>
 
-            <div class="container" style="padding-top: 70px; height: 100%;">
-                <div data-bind="visible: PhysicalSection">
-                    AccumV = <span data-bind="text: AccumV"></span>
-                    AccumH = <span data-bind="text: AccumH"></span>
-                </div>
+                <div class="container" style="padding-top: 70px; height: 100%;">
 
-                <div data-bind="visible: EvolutionSection" id="HighchartGraphs">
-                    <br />
-                    <div id="lgkWSContainer"></div>
-                    <br />
-                    <div id="lgkRHContainer"></div>
-                    <br />
-                    <div id="lgkTContainer"></div>
-                </div>
-
-                <div data-bind="visible: MapSection" id="mapsection" style="height: 100%;">
-                    <div id="map" style="width: 100% !important;">
-                    </div>
-                </div>
-
-                <div data-bind="visible: PhotoSection" style="text-align: center;">
-                    <br />
-                    <button id="btnCapturePhoto" data-bind="click: addObservation, visible: ObservationImage() == ''" class="btn btn-success">
-                        <span class="glyphicon glyphicon-camera glyph-big"></span>
+                    <div data-bind="visible: WP2Section">
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: PhysicalSection }, click: SelectSection.bind($data, 'physical')">
+                                        <span class="glyphicon glyphicon-heart glyph-big"></span>
+                                        <br />
+                                        <span>Physical activity</span>
+                                    </button>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: PhotoSection }, click: SelectSection.bind($data, 'photo')">
+                                        <span class="glyphicon glyphicon-eye-open glyph-big"></span>
+                                        <br />
+                                        <span>New observation</span>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: MapSection }, click: SelectSection.bind($data, 'map')">
+                                        <span class="glyphicon glyphicon-globe glyph-big"></span>
+                                        <br />
+                                        View observations
+                                    </button>
+                                </td>
+                            </tr>
+<!--                            <tr>
+                                <td></td>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: SettingsSection }, click: SelectSection.bind($data, 'settings')">
+                                        <span class="glyphicon glyphicon-wrench glyph-big"></span>
+                                        <br />
+                                        Settings
+                                    </button>
+                                </td>
+                            </tr>-->
+                        </table>
                         <br />
-                        Capture Photo</button>
-                    <div data-bind="visible: ObservationImage() != ''" id="divCaptured">
-                        <img style="width: 100%;" class="img-rounded" id="capturedimage" data-bind="attr: { src: ObservationImage }" /><br />
-                        <button id="btnDiscard" data-bind="click: discardObservation" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove glyph-big"></span>
-                            <br />
-                            Discard
-                        </button>
                     </div>
-                    <br />
-                    <br />
-                    <!--<select class="form-control" data-bind="options: ObservationTypes, optionsText: 'name', value: selectedObservationType, optionsCaption: 'Choose type'">
-                        </select>
-                        <br />-->
-                    <select class="form-control" data-bind="options: ObservationPerceptions, value: selectedObservationPerception, optionsCaption: 'Choose perception'">
-                    </select>
-                    <br />
-                    <br />
-                    <button class="btn btn-success" data-bind="click: saveObservation, visible: selectedObservationPerception() && ObservationImage()">
-                        <span class="glyphicon glyph-big glyphicon-save"></span>
+
+                    <div data-bind="visible: WP3Section">
+                         
+
+                        <input type="text" class="form-control" data-bind="value: UserEmail" placeholder="Email to send session summary" /><br />
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <button class="btn btn-success" data-bind="click: startSession, disable: SessionRunning">
+                                    <span class="glyphicon glyph-big glyphicon-play"></span>
+                                    <br />
+                                    Start</button>
+                                <button class="btn btn-success" data-bind="click: stopSession, enable: SessionRunning">
+                                    <span class="glyphicon glyph-big glyphicon-stop"></span>
+                                    <br />
+                                    Stop</button>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <h1 id="sessiontime">00:00:00</h1>
+                            </div>
+                        </div>
+                        <div class="stopwatch"></div>
+                        <h4>Last measured</h4>
+                        <div class="row" style="font-weight: bold; font-size: 12px">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Wind Speed</div>
+                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><span data-bind="text: LastWindSpeed"></span></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span data-bind="text: LastWindSpeedDate"></span></div>
+                        </div>
+                        <div class="row" style="font-weight: bold; font-size: 12px">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Temperature</div>
+                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><span data-bind="text: LastTemperature"></span></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span data-bind="text: LastTemperatureDate"></span></div>
+                        </div>
+                        <div class="row" style="font-weight: bold; font-size: 12px">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Humidity</div>
+                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><span data-bind="text: LastHumidity"></span></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span data-bind="text: LastHumidityDate"></span></div>
+                        </div>
+                        <div class="row" style="font-weight: bold; font-size: 12px">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">Sound</div>
+                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"><span data-bind="text: LastAcoustic"></span></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><span data-bind="text: LastAcousticDate"></span></div>
+                        </div>
                         <br />
-                        Report observation</button>
-                </div>
+                        <table class="table">
+                            <tr>
+                                <td colspan="2" data-bind="visible: newSession().timestarted() && newSession().timeended()">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="font-weight: bold">
+                                        Start:
+                                        <span data-bind="text: newSession().timestarted() ? moment(newSession().timestarted()).format('HH:mm:ss') : ' ' "></span>
+                                        End:
+                                        <span data-bind="text: newSession().timeended() ? moment(newSession().timeended()).format('HH:mm:ss') : ' ' "></span>
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: EvolutionSection }, click: SelectSection.bind($data, 'evolution')">
+                                        <span class="glyphicon glyphicon-stats glyph-big"></span>
+                                        <br />
+                                        <span>View evolution</span>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: ResultSection }, enable: newSession().timestarted() && newSession().timeended(), click: SelectSection.bind($data, 'result')">
+                                        <span class="glyphicon glyphicon-user glyph-big"></span>
+                                        <br />
+                                        <span>View results</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: PhotoSection }, click: SelectSection.bind($data, 'photo')">
+                                        <span class="glyphicon glyphicon-eye-open glyph-big"></span>
+                                        <br />
+                                        <span>New observation</span>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: MapSection }, click: SelectSection.bind($data, 'map')">
+                                        <span class="glyphicon glyphicon-globe glyph-big"></span>
+                                        <br />
+                                        View observations
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: QuestionnaireSection }, click: SelectSection.bind($data, 'questionnaire')">
+                                        <span class="glyphicon glyphicon-question-sign glyph-big"></span>
+                                        <br />
+                                        <span>Questionnaire</span>
+                                    </button>
+                                </td>
+                                <td>
 
-                <div data-bind="visible: NewSessionSection">
+                                </td>
+                            </tr>
 
-
-                    <div data-bind="foreach: SensorNoise">
-                        <h3 data-bind="text: bn"></h3>
-                        <span data-bind="text: e().length"></span>
-                        <table class="table table-bordered table-condensed">
-                            <tbody data-bind="foreach: e">
-                                <tr>
-                                    <td data-bind="text: u"></td>
-                                </tr>
-                            </tbody>
+<!--                            <tr>
+                                <td></td>
+                                <td>
+                                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="css: { active: SettingsSection }, click: SelectSection.bind($data, 'settings')">
+                                        <span class="glyphicon glyphicon-wrench glyph-big"></span>
+                                        <br />
+                                        Settings
+                                    </button>
+                                </td>
+                            </tr>-->
                         </table>
                     </div>
 
-                </div>
-
-                <div data-bind="visible: ViewSessionsSection">
-                </div>
-
-                <div data-bind="visible: SettingsSection">
-                </div>
-
-                <div data-bind="visible: ResultSection" id="Div1" style="height: 100%;">
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><input type="text" class="form-control" data-bind="value: AreaId" placeholder="Area Id" /></div>
-                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><input type="text" class="form-control" data-bind="value: SiteId" placeholder="Site Id" /></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><input type="text" class="form-control" data-bind="value: CloudId" placeholder="Cloud Id (0-8)" /></div>
-                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><input type="text" class="form-control" data-bind="value: RadiationId" placeholder="Radiation Id (0 / 1)" /></div>
-                    </div><br />
-                    
-
-                    <div class="row">
-                        <div id="cgComfortIndex" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="height:300px;"></div>
-                        <div>
-                            <div id='thermalIndexes' class='row' style="padding-top: 50px">
-                            </div> 
+                    <div data-bind="visible: PhysicalSection">
+                        <div class="form-horizontal">
+                            <div class="form-group" data-bind="visible: PhysicalSectionActive">
+                                <h3>
+                                    <label for="physicaldatefrom" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label" style="font-weight: normal">
+                                        Show data
+                                    </label>
+                                </h3>
+                            </div>
+                            <div class="form-group" data-bind="visible: PhysicalSectionActive">
+                                <label for="physicaldatefrom" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 control-label">From</label>
+                                <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                    <input type="datetime-local" class="form-control" id="PhysicalDateFrom" data-bind="value: PhysicalDateFrom" />
+                                </div>
+                                <br />
+                                <br />
+                            </div>
+                            <div class="form-group" data-bind="visible: PhysicalSectionActive">
+                                <label for="physicaldateto" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 control-label">To</label>
+                                <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                    <input type="datetime-local" class="form-control" id="PhysicalDateTo" data-bind="value: PhysicalDateTo" />
+                                </div>
+                                <br />
+                                <br />
+                            </div>
+                        </div>
+                        <button style="width: 100%;" type="button" class="btn btn-success" data-bind="visible: PhysicalSectionActive, click: SelectSection.bind($data, 'PhysicalSectionGraph')">
+                            <span class="glyphicon glyphicon-stats glyph-big"></span>
+                            <br />
+                            Graph
+                        </button>
+                        <button style="width: 100%;" type="button" class="btn btn-success" data-bind="visible: PhysicalSectionActive, click: SelectSection.bind($data, 'PhysicalSectionMap')">
+                            <span class="glyphicon glyphicon-map-marker glyph-big"></span>
+                            <br />
+                            Map
+                        </button>
+                        <div data-bind="visible: PhysicalSectionMap">
+                            <div id="container_map" style="width: 100%; height: 400px;"></div>
+                        </div>
+                        <div data-bind="visible: PhysicalSectionGraph">
+                            <div id="container_graph" style="width: 100%; height: 400px;"></div>
                         </div>
                     </div>
+
+                    <div data-bind="visible: EvolutionSection" id="HighchartGraphs">
+                        <br />
+                        <div id="lgkWSContainer"></div>
+                        <br />
+                        <div id="lgkRHContainer"></div>
+                        <br />
+                        <div id="lgkTContainer"></div>
+                        <br />
+                        <div id="lgAAContainer"></div>
+                    </div>
+
+                    <div data-bind="visible: MapSection" id="mapsection" style="height: 100%;">
+                        <div id="map" style="width: 100% !important;">
+                        </div>
+                    </div>
+
+                    <div data-bind="visible: PhotoSection" style="text-align: center;">
+                        <br />
+                        <button id="btnCapturePhoto" data-bind="click: addObservation, visible: ObservationImage() == ''" class="btn btn-success">
+                            <span class="glyphicon glyphicon-camera glyph-big"></span>
+                            <br />
+                            Capture Photo
+                        </button>
+                        <div data-bind="visible: ObservationsNotSynced().length > 0">
+                            Items not uploaded: <span data-bind="text: ObservationsNotSynced().length"></span>
+                            <button style="width: 100%;" type="button" class="btn btn-success" data-bind="visible: !LoadingSync(), click: SyncObservations">
+                                <span class="glyphicon glyphicon-refresh glyph-big"></span>
+                                <br />
+                                <span>Retry upload</span>
+                            </button>
+                        </div>
+                        <div data-bind="visible: ObservationImage() != ''" id="divCaptured">
+                            <div style="margin-bottom: 10px">
+                                <img style="width: 100%;" class="img-rounded" id="capturedimage" data-bind="attr: { src: ObservationImage }" /><br />
+                            </div>
+                            <button id="btnDiscard" data-bind="click: discardObservation" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove glyph-big"></span>
+                                <br />
+                                Discard
+                            </button>
+                            <!--<button id="btnDiscard" data-bind="click: rotateObservation" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-remove glyph-big"></span>
+                                <br />
+                                Rotate
+                            </button>-->
+                        </div>
+                        <br />
+                        <br />
+                        <!--<select class="form-control" data-bind="options: ObservationTypes, optionsText: 'name', value: selectedObservationType, optionsCaption: 'Choose type'">
+                            </select>
+                            <br />-->
+                        <select class="form-control" data-bind="options: ObservationPerceptions, value: selectedObservationPerception, optionsCaption: 'Choose perception'">
+                        </select>
+                        <br />
+                        <br />
+                        <button class="btn btn-success" data-bind="click: saveObservation, visible: selectedObservationPerception() && ObservationImage()">
+                            <span class="glyphicon glyph-big glyphicon-save"></span>
+                            <br />
+                            Report observation</button>
+                    </div>
+
+                    <div data-bind="visible: NewSessionSection">
+                        <div data-bind="foreach: SensorNoise">
+                            <h3 data-bind="text: bn"></h3>
+                            <span data-bind="text: e().length"></span>
+                            <table class="table table-bordered table-condensed">
+                                <tbody data-bind="foreach: e">
+                                    <tr>
+                                        <td data-bind="text: u"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div data-bind="visible: ViewSessionsSection">
+                    </div>
+
+                    <div data-bind="visible: SettingsSection">
+
+                        <h3>Personal sensors</h3>
+
+                        <div class="form-group">
+                            <input type="checkbox" data-bind="checked: Settings().hasthermsensor" />
+                            <label for="thermalsensorid">Thermal Sensor</label>
+                            <input class="form-control" id="thermalsensorid" data-bind="value: Settings().thermalsensorid" placeholder="Enter Kestrel id" />
+                        </div>
+
+                        <div class="form-group">
+                            <input type="checkbox" data-bind="checked: Settings().hasaccsensor" />
+                            <label>Accoustic Sensor</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Accelerometer Sensor</label>
+                            <input class="form-control" data-bind="value: Settings().accelerometerid" placeholder="Enter accelerometer id" />
+                        </div>
+
+                        <br />
+
+                        <h3>Application Settings</h3>
+
+                        <div class="form-group">
+                            <label>User id: &nbsp;</label><br />
+                            <span data-bind="text: Settings().userid"></span><br />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Local Database:</label><br />
+                            <span data-bind="text: Settings().dbtype"></span>
+                        </div>
+
+                        <div style="text-align: center;">
+                            <br />
+                            <button class="btn btn-success" data-bind="click: saveSettings">
+                                <span class="glyphicon glyph-big glyphicon-save"></span>
+                                <br />
+                                Save settings
+                            </button>
+                            <button class="btn btn-success" data-bind="click: newUser">
+                                <span class="glyphicon glyph-big glyphicon-refresh"></span>
+                                <br />
+                                New user
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div data-bind="visible: ResultSection" style="height: 100%;">
+                       
+                        <div data-bind="visible: AcousticSection" style="height: 100%;">
+                            <h3>Acoustic Comfort</h3>
+
+                            <div class="row">
+                                <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3 xs" for="inputAcousticIndex">Index</label>
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                    <input type="text" id="inputAcousticIndex" class="form-control input-sm" data-bind="value: InputAcousticIndex" placeholder="0" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <br />
+                                <div id="cgAcousticIndex" class="col-xs-4 col-sm-4 col-md-4 col-lg-4" style="height: 200px"></div>
+                                <div id="cgAcousticIndex" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="height: 200px">
+                                    <br />
+                                    <img style="align-content: center;" src="img/acousticinfo.jpg" alt="acoustic data" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 xsbt">
+                                    Sound indicators
+                                </div>
+                                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 xsbt">
+                                    Sound events
+                                </div>
+                                </div>
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 xsb">
+                                    LAeq=
+                                </div>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xsb">
+                                    <!--63 dBA-->
+                                    <span data-bind="text: LAeq"></span>
+                                </div>
+                                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 xsb">
+                                    <span data-bind="text: LAeqEvTot"></span> of <span data-bind="text: moment(moment(newSession().timeended()).diff(moment(newSession().timestarted()))).format('m') "></span> minutes
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 xsb">
+                                    LAeq 1sec max=
+                                </div>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xsb">
+                                    <!--83 dBA-->
+                                    <span data-bind="text: LAeqMax"></span>
+                                </div>
+                                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 xsb">
+                                    <span data-bind="text: LAeqEvUnpleasant"></span> unpleasant
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 xsb">
+                                    LAeq 1sec min=
+                                </div>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xsb">
+                                    <!--56 dBA-->
+                                    <span data-bind="text: LAeqMin"></span>
+                                </div>
+                                <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 xsb">
+                                    <span data-bind="text: LAeqEvPleasant"></span> pleasant
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 xsbt">
+                                    Dominant noise sources
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 xsb">
+                                    Focus 1
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 xsb">
+                                    Focus 2
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 xsb">
+                                    <span data-bind="text: DomSound1Source"></span>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 xsb">
+                                    <span data-bind="text: DomSound2Source"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 xsb">
+                                    <span data-bind="text: DomSound1Perception"></span>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 xsb">
+                                    <span data-bind="text: DomSound2Perception"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 xsbt">
+                                    Rating soundscape as
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 xsbt">
+                                    <span data-bind="text: TotSoundPerception"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div data-bind="visible: ThermalSection" style="height: 100%;">
+                            <h3>Thermal Index</h3>
+
+                            <div class="row">
+                                <label class="col-xs-1 col-sm-1 col-md-1 col-lg-1 xs" for="inputAreaId">Area</label>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                    <input type="text" id="inputAreaId" class="form-control input-sm" data-bind="value: AreaId" placeholder="0" />
+                                </div>
+                                <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xs" for="inputCloudId">Cl.Cover</label>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                    <input type="text" id="inputCloudId" class="form-control input-sm" data-bind="value: CloudId" placeholder="0/1" />
+                                </div>
+                                <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xs" for="inputClothing">Clothing</label>
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 xs">
+                                    <input type="text" id="inputClothing" class="form-control input-sm" data-bind="value: Clothing" placeholder="0" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-xs-1 col-sm-1 col-md-1 col-lg-1 xs" for="inputSiteId">Site</label>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                    <input type="text" id="inputSiteId" class="form-control input-sm" data-bind="value: SiteId" placeholder="0" />
+                                </div>
+                                <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xs" for="inputRadiationId">Radiation</label>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                    <input type="text" id="inputRadiationId" class="form-control input-sm" data-bind="value: RadiationId" placeholder="0-8" />
+                                </div>
+                                <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xs" for="inputHeight">Height</label>
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 xs">
+                                    <input type="text" id="inputHeight" class="form-control input-sm" data-bind="value: Height" placeholder="000" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-xs-1 col-sm-1 col-md-1 col-lg-1 xs" for="inputAge">Age</label>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                    <input type="text" id="inputAge" class="form-control input-sm" data-bind="value: Age" placeholder="0" />
+                                </div>
+                                <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xs" for="inputGender">Gender</label>
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 ">
+                                    <input type="text" id="inputGender" class="form-control input-sm" data-bind="value: Gender" placeholder="0/1" />
+                                </div>
+                                <label class="col-xs-2 col-sm-2 col-md-2 col-lg-2 xs" for="inputWeight">Weight</label>
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 xs">
+                                    <input type="text" id="inputWeight" class="form-control input-sm" data-bind="value: Weight" placeholder="00" />
+                                </div>
+                            </div>
+                            <div style="text-align: center">
+                                <img style="align-content: center" src="img/loader.gif" alt="syncing data" data-bind="visible: LoadingSync" />
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <div id="cgComfortIndex" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="height: 250px;"></div>
+                                <div id="thermalIndexes"></div>
+                                <!--<div>
+                                    <div id='thermalIndexes' class='row'></div>
+                                </div>-->
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                    <button style="width: 100%;" class="btn btn-success" data-bind="click: getQuestionnaireAnswers">
+                                        <span class="glyphicon glyph-big glyphicon-save"></span>
+                                        Input values
+                                    </button>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                    <button style="width: 100%;" class="btn btn-success" data-bind="click: CalculateComfortIndex">
+                                        <span class="glyphicon glyphicon-user glyph-big"></span>
+                                        Calculate
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <button style="width: 100%;" class="btn btn-success" data-bind="click: sendResultsEmail">
+                                    <span class="glyphicon glyph-big glyphicon-share"></span>
+                                    Email all results
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div data-bind="visible: QuestionnaireSection" class="break" style="">
+                        <div id="questionnaire" style="width: 100% !important; height: 100% !important; overflow:hidden;"></div>
+                    </div>
+
+                    <img src="img/loader.gif" alt="syncing data" data-bind="visible: LoadingSync" />
+
+                    <div><span data-bind="text: ErrorMsg"></span></div>
+
                 </div>
 
-                <div>
-                    <span id="spanDebug">Debug</span>
-                    <span data-bind="text: ErrorMsg"></span>
+                <div id="divLoading" data-bind="visible: Loading" class="container" style="padding-top: 60px; height: 100%; width: 100%;">
+                    <div style="width: 100%; margin: 0 auto; text-align: center;">
+                        <img src="img/loader.gif" alt="loading" />
+                    </div>
                 </div>
 
-
+                <span id="spanDebug" style="display:none;"></span>
+                <!--<div id="sendintent">
+                    <button style="width: 100%;" type="button" class="btn btn-success" data-bind="click: SendIntent">
+                        <span class="glyphicon glyphicon-refresh glyph-big"></span>
+                        <br />
+                        <span>Send intent</span>
+                    </button>
+                </div>-->
+               
 
             </div>
-
         </div>
     </div>
-    <div id="divLoading" data-bind="visible: Loading" class="container" style="padding-top:60px;height:100%;width:100%;">
-        <div style="width:100%;margin:0 auto;text-align: center;"><img src="Content/gfx/loader.gif" alt="loading" /></div>
+    
+    <!-- noise dialog popup -->
+    <div class="form-content" style="display:none;">
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="noisePerceptionSelect">Perception</label>
+            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                <div class="radio lblbfix">
+                    <label for="noisePerceptionSelect-0">
+                        <input type="radio" name="noisePerceptionSelect" id="noisePerceptionSelect-0" class="radioPopup" value="0" checked="checked">Pleasant
+                    </label>
+                </div>
+                <div class="radio lblbfix">
+                    <label for="noisePerceptionSelect-1">
+                        <input type="radio" name="noisePerceptionSelect" id="noisePerceptionSelect-1" class="radioPopup" value="1">Unpleasant
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="noiseSourceSelect">Source</label>
+            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                <div class="radio lblbfix">
+                    <label for="noiseSourceSelect-0">
+                        <input type="radio" name="noiseSourceSelect" id="noiseSourceSelect-0" class="radioPopup" value="0" checked="checked">traffic
+                    </label>
+                </div>
+                <div class="radio lblbfix">
+                    <label for="noiseSourceSelect-1">
+                        <input type="radio" name="noiseSourceSelect" id="noiseSourceSelect-1" class="radioPopup" value="1">water
+                    </label>
+                </div>
+                <div class="radio lblbfix">
+                    <div class="radio ">
+                        <label for="noiseSourceSelect-2">
+                            <input type="radio" name="noiseSourceSelect" id="noiseSourceSelect-2" class="radioPopup" value="2">wind
+                        </label>
+                    </div>
+                    <div class="radio lblbfix">
+                        <label for="noiseSourceSelect-3">
+                            <input type="radio" name="noiseSourceSelect" id="noiseSourceSelect-3" class="radioPopup" value="3">birds
+                        </label>
+                    </div>
+                    <div class="radio lblbfix">
+                        <label for="noiseSourceSelect-4">
+                            <input type="radio" name="noiseSourceSelect" id="noiseSourceSelect-4" class="radioPopup" value="4">public works
+                        </label>
+                    </div>
+                    <div class="radio lblbfix">
+                        <label for="noiseSourceSelect-5">
+                            <input type="radio" name="noiseSourceSelect" id="noiseSourceSelect-5" class="radioPopup" value="5">others
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!--<div class="form-content" style="display:none;">
+            <div class="form-group">
+                <label for="noiseSourceSelect">Source</label>
+                <select name="noiseSourceSelect" id="noiseSourceSelect" class="form-control">
+                    <option value="0">traffic</option>
+                    <option value="1">water</option>
+                    <option value="2">wind</option>
+                    <option value="3">birds</option>
+                    <option value="4">public works</option>
+                    <option value="5">others</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="noisePerceptionSelect">Perception</label>
+                <select name="noisePerceptionSelect" id="noisePerceptionSelect" class="form-control">
+                    <option value="0">pleasant</option>
+                    <option value="1">unpleasant</option>
+                </select>
+            </div>
+    </div>-->
 </body>
 
-<script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" src="js/knockout-3.0.0.js"></script>
+<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="js/knockout-3.1.0.js"></script>
 <script type="text/javascript" src="js/knockout.mapping-latest.js"></script>
 <script type="text/javascript" src="js/q.min.js"></script>
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/breeze.min.js"></script>
 <script type="text/javascript" src="js/bootbox.min.js"></script>
 <script type="text/javascript" src="js/moment.min.js"></script>
+<script type="text/javascript" src="js/ydn.db-iswu-sql.js"></script>
+<!--<script type="text/javascript" src="js/webintent.js"></script>-->
 <script type="text/javascript" src="js/Custom/Stopwatch.js"></script>
-<script type="text/javascript" src="js/Custom/citisense.indexedDb.js"></script>
+<script type="text/javascript" src="js/Custom/citisense.db.js"></script>
+<script type="text/javascript" src="js/Custom/citisense.file.js"></script>
+<script type="text/javascript" src="js/Custom/sensapp.db.js"></script>
+<script type="text/javascript" src="js/Custom/Init.js"></script>
+<script type="text/javascript" src="js/Views/mobile.js"></script>
+<script type="text/javascript" src="js/jQueryRotateCompressed.js"></script>
+
+<!--<script type="text/javascript" src="js/Custom/citisense.indexedDb.js"></script>-->
 <script type="text/javascript" src="js/Custom/technalia.PETCalculation.js"></script>
 
 <script type="text/javascript" src="js/highcharts.js"></script>
-<script type="text/javascript" src="js/Views/mobile.js"></script>
-<script type="text/javascript" src="js/Custom/Init.js"></script>
+<script src="http://citisense.u-hopper.com/widgets/activities/jquery.activities.js"></script>
 
 <!-- bring in the google maps library -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfkhzzej5c5x-Il7BkxoTSvJcH_WYADWA&v=3.exp&sensor=true"></script>
@@ -328,5 +807,13 @@
 <script type="text/javascript" src="js/Custom/citisense.highchart.themes.js"></script>
 <script type="text/javascript" src="js/Custom/citisense.highchart.graphs.js"></script>
 <script type="text/javascript" src="js/Custom/citisense.graph.js"></script>
+<script type="text/javascript" src="js/Custom/UHopperQuestionnaire.js"></script>
+    
+
+<!--<script type="text/javascript" src="js/Custom/jquery.activities.js"></script>-->
 <!--<script type="text/javascript" src="Scripts/Custom/Camera.js"></script>-->
+<script type="text/javascript">
+    var viewModel = new AppModel();
+    ko.applyBindings(viewModel, $("#divApp")[0]);
+</script>
 </html>
